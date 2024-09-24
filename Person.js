@@ -15,34 +15,49 @@ class Person extends GameObject {
     }
 
     update(state) {
-        this.updatePosition();
-        this.updateSprite(state);
+        if (this.movingProgressRemaining > 0) {
+            this.updatePosition();
+        } else {
+            //Case: we're keyboard ready and have an arrow pressed
+            if (this.isPlayerControlled && state.arrow) {
+                this.startBehavior(state, {
+                    type: 'walk',
+                    direction: state.arrow
+                })
+            }
+            this.updateSprite();
+        }
+    }
 
-        if (this.isPlayerControlled && this.movingProgressRemaining === 0 && state.arrow) {
-            this.direction = state.arrow;
+    startBehavior(state, behavior) {
+        // set character direction to whatever behavior has
+        this.direction = behavior.direction;
+        if (behavior.type === 'walk') {
+            //stop here if space is not free
+            if (state.map.isSpaceTaken(this.x, this.y, this.direction)) {
+                return;
+            }
+            // ready to walk
+            state.map.moveWall(this.x, this.y, this.direction);
             this.movingProgressRemaining = 16;
         }
     }
 
     updatePosition() {
-        if (this.movingProgressRemaining > 0) {
-            // fetching [y, -1]                             // up
-            const [property, change] = this.directionUpdate[this.direction];
-            //this.y            -1
-            this[property] += change;
-            this.movingProgressRemaining -= 1;
-        }
+        // fetching [y, -1]                             // up
+        const [property, change] = this.directionUpdate[this.direction];
+        //this.y            -1
+        this[property] += change;
+        this.movingProgressRemaining -= 1;
     }
 
-    updateSprite(state) {
-        if (this.isPlayerControlled && this.movingProgressRemaining === 0 && !state.arrow) {
-            this.sprite.setAnimation('idle-'+this.direction); // by default idle
-            return;
-        }
-        
+    updateSprite() {
         // if there is still remaining value to walk
         if (this.movingProgressRemaining > 0) {
             this.sprite.setAnimation('walk-'+this.direction);
+            return;
         }
+
+        this.sprite.setAnimation('idle-'+this.direction); // by default idle
     }
 }

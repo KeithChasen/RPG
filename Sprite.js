@@ -65,7 +65,6 @@ class Sprite {
         if (this.frame === undefined) {
             this.currentAnimationFrame = 0;
         }
-
     }
 
     draw(ctx, cameraPerson) {
