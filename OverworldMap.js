@@ -189,7 +189,7 @@ window.OverworldMaps = {
         upperSrc: 'images/maps/KitchenUpper.png',
         gameObjects: {
             hero: new Person({
-                x: utils.withGrid(3), y: utils.withGrid(5),
+                x: utils.withGrid(6), y: utils.withGrid(5),
                 isPlayerControlled: true
             }),
             npcB: new Person({
@@ -203,6 +203,15 @@ window.OverworldMaps = {
                     }
                 ]
             }),
+        },
+        cutsceneSpaces: {
+            [utils.asGridCoord(5,10)]: [
+                {
+                    events: [
+                        { type: "changeMap", map: 'DemoRoom' }
+                    ]
+                }
+            ]
         }
     },
 
